@@ -6,6 +6,12 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.plaf.FileChooserUI;
+import java.io.IOException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+
 
 
 /*
@@ -59,8 +65,6 @@ public class Tuned extends javax.swing.JFrame {
         jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jLabel1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Captura de pantalla 2023-12-06 164555.png"))); // NOI18N
-
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel4.setText("String matching: Tuned Boyer-Moore");
 
@@ -73,6 +77,11 @@ public class Tuned extends javax.swing.JFrame {
         });
 
         pdfOutput.setText("PDF output");
+        pdfOutput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pdfOutputActionPerformed(evt);
+            }
+        });
 
         Matching.setText("Matching");
         Matching.addActionListener(new java.awt.event.ActionListener() {
@@ -228,6 +237,49 @@ public class Tuned extends javax.swing.JFrame {
     }
 
     }//GEN-LAST:event_MatchingActionPerformed
+
+    private void pdfOutputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pdfOutputActionPerformed
+         if (jTextArea1.getText() != null && !jTextArea1.getText().isEmpty()) {
+        try {
+            String texto = jTextArea1.getText(); // Obtener el texto del JTextArea
+
+            // Crear un nuevo documento PDF
+            PDDocument documento = new PDDocument();
+            PDPage pagina = new PDPage();
+            documento.addPage(pagina);
+
+            // Inicializar el stream de contenido para escribir en la página
+            PDPageContentStream contenido = new PDPageContentStream(documento, pagina);
+            contenido.beginText();
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 14);
+            contenido.newLineAtOffset(50, 700); // Posición de inicio del texto en la página
+            contenido.showText(texto);
+            contenido.endText();
+
+            // Calcular la longitud del texto para dibujar la línea de subrayado
+            float longitudTexto = PDType1Font.HELVETICA.getStringWidth(texto) / 1000 * 12;
+
+            // Dibujar una línea debajo del texto para simular el subrayado
+            contenido.moveTo(50, 695); // Posición inicial de la línea (debajo del texto)
+            contenido.lineTo(50 + longitudTexto, 695); // Posición final de la línea (debajo del texto)
+            contenido.setStrokingColor(0, 0, 0); // Color de la línea: negro
+            contenido.setLineWidth(1); // Grosor de la línea
+            contenido.stroke();
+
+            // Cerrar el contenido y guardar el documento PDF
+            contenido.close();
+            documento.save("resultado.pdf");
+            documento.close();
+
+            System.out.println("PDF creado exitosamente con texto subrayado.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error al crear el PDF.");
+        }
+    } else {
+        System.err.println("No hay texto para generar el PDF.");
+    }
+    }//GEN-LAST:event_pdfOutputActionPerformed
 
     /**
      * @param args the command line arguments

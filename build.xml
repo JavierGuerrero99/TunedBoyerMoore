@@ -8,8 +8,21 @@
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
 <project name="TunedBoyer-Moore1" default="default" basedir=".">
-    <description>Builds, tests, and runs the project TunedBoyer-Moore1.</description>
+   <description>Builds, tests, and runs the project TunedBoyer-Moore1.</description>
     <import file="nbproject/build-impl.xml"/>
+    <path id="libraries">
+        <fileset dir="lib">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <!-- Configuración de compilación -->
+    <target name="compile" depends="init">
+    <javac srcdir="." destdir="build" includeantruntime="false">
+        <classpath refid="libraries"/> <!-- Referencia a las bibliotecas -->
+    </javac>
+    </target>
+
     <!--
 
     There exist several targets which are by default empty and which can be 
